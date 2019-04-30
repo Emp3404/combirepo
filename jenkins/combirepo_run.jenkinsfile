@@ -204,7 +204,7 @@ pipeline {
           ks=$ks"_mobile-wayland-armv7l-tm1.ks"
           echo ${ks}
           rm -rf build*
-          '''
+          ''',
           returnStdout: true
           ).trim()
         script {
