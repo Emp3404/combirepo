@@ -28,9 +28,9 @@ pipeline {
 
 
   stages {
-    stage('Parameters initialization') {
+    stage('Echo') {
       steps {
-          echo "Params"
+         echo "Params"
           echo $OBS
           #echo "Params= ${params.KICKSTART_FILE}"
           ${params.KICKSTART_FILE}=sh(
@@ -44,6 +44,10 @@ pipeline {
           ''',
           returnStdout: true
           ).trim()
+      }
+    }
+    stage('Parameters initialization') {
+      steps {     
         script {
           ksFile = "local.ks"
           logFile = "local.log"
