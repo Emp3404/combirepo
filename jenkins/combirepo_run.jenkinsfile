@@ -31,6 +31,7 @@ pipeline {
     stage('Parameters initialization') {
       steps {
           echo "Params"
+          echo $OBS
           #echo "Params= ${params.KICKSTART_FILE}"
           ${params.KICKSTART_FILE}=sh(
           script: '''
