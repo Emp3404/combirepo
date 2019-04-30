@@ -198,7 +198,8 @@ pipeline {
   stages {
     stage('Echo') {
       steps {
-          echo "Params"
+          echo "Params ${params}"
+          echo "Params ${params.KICKSTART_FILE}"
       }
     }
     stage('Parameters initialization') {
