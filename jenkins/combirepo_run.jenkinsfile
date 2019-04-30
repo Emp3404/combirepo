@@ -198,6 +198,7 @@ pipeline {
   stages {
     stage('Echo') {
       steps {
+          params.KICKSTART_FILE='abc'
           echo "Params ${params}"
           echo "Params ${params.KICKSTART_FILE}"
       }
