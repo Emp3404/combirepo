@@ -196,13 +196,6 @@ pipeline {
 
 
   stages {
-    stage('Echo') {
-      steps {
-          params.KICKSTART_FILE='abc'
-          echo "Params ${params}"
-          echo "Params ${params.KICKSTART_FILE}"
-      }
-    }
     stage('Parameters initialization') {
       steps {     
         script {
@@ -258,8 +251,7 @@ pipeline {
               return 0
             }
           }
-          if (checkStr(params.OBS_ACCOUNT_ID, "OBS_ACCOUNT_ID") ||
-              checkStr(params.KICKSTART_FILE, "KICKSTART_FILE")) {
+          if (checkStr(params.OBS_ACCOUNT_ID, "OBS_ACCOUNT_ID")) {
             println "Error: Parameters check failed!"
             sh "exit 1"
           }
@@ -278,8 +270,20 @@ pipeline {
         else
           cat ${pkgTmp} | awk '{print \$1}' | sed -e 's|.${params.ARCH}||g' | sed -e 's|.noarch||g' | sort -n > ${pkgFile}
         fi
-
-        wget ${params.KICKSTART_FILE} -O ${ksFile} --user ${OBS_USR} --password ${OBS_PSW}
+        
+        tmp_url = sh(
+          script: '''
+          wget -q 'http://m.ahmadullin:Sun$357D@10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/build.xml'
+          ks=$(cat *.xml | grep san-tizen-5.5-unified-asan_)
+          ks=$(echo $ks | cut -c5-41)
+          ks=$ks"_mobile-wayland-armv7l-tm1.ks"
+          echo ${ks}
+          rm -rf build*
+          ''',
+          returnStdout: true
+          ).trim()
+        
+        wget $tmp_url -O ${ksFile} --user ${OBS_USR} --password ${OBS_PSW}
         if [ ! -f ${ksFile} ]; then
             echo "Kickstart file not found!"
             exit 1
