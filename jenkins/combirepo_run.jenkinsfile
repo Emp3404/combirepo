@@ -195,9 +195,9 @@ pipeline {
 
   stages {
     stage('Parameters initialization') {
-      steps {
-      	  step {
-          env.KICKSTART_FILE=sh '''
+      steps {      	  
+          params.KICKSTART_FILE=sh(
+          script: '''
           wget -q 'http://m.ahmadullin:Sun$357D@10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/build.xml'
           ks=$(cat *.xml | grep san-tizen-5.5-unified-asan_)
           ks=$(echo $ks | cut -c5-41)
@@ -205,7 +205,8 @@ pipeline {
           echo ${ks}
           rm -rf build*
           '''
-          }
+          returnStdout: true
+          ).trim()
         script {
           ksFile = "local.ks"
           logFile = "local.log"
