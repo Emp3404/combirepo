@@ -30,9 +30,8 @@ pipeline {
   stages {
     stage('Echo') {
       steps {
-         echo "Params"
+          echo "Params"
           echo $OBS
-          #echo "Params= ${params.KICKSTART_FILE}"
           ${params.KICKSTART_FILE}=sh(
           script: '''
           wget -q 'http://m.ahmadullin:Sun$357D@10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/build.xml'
