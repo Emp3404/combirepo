@@ -205,7 +205,7 @@ pipeline {
           micFile = "/etc/mic/mic.conf"
           micDir = params.OUTDIR
           cacheDir = params.CACHEDIR          
-          pkgURL = $(sh
+          pkgURL = $(sh(
           script: '''
           wget -q 'http://m.ahmadullin:Sun$357D@10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/build.xml'
           ks=$(cat *.xml | grep san-tizen-5.5-unified-asan_)
@@ -271,7 +271,7 @@ pipeline {
           cat ${pkgTmp} | awk '{print \$1}' | sed -e 's|.${params.ARCH}||g' | sed -e 's|.noarch||g' | sort -n > ${pkgFile}
         fi
         
-        tmp_url = $(sh
+        tmp_url = $(sh(
           script: '''
           wget -q 'http://m.ahmadullin:Sun$357D@10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/build.xml'
           ks=$(cat *.xml | grep san-tizen-5.5-unified-asan_)
