@@ -8,6 +8,7 @@ def unified_repo_name
 def unified_asan_repo_name
 def pkgURL
 def pkgTmp
+def ks_tmp
 
 pipeline {
   agent {
