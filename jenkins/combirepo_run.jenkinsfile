@@ -199,16 +199,16 @@ pipeline {
   stages {
     stage('Parameters initialization') {
       steps {
-          sh """
+          sh '''
           wget -q 'http://m.ahmadullin:Sun''\044''357D@10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/build.xml'
           ks=$(cat *.xml | grep san-tizen-5.5-unified-asan_)
           ks=$(echo $ks | cut -c5-41)
           ks=$ks"_mobile-wayland-armv7l-tm1.ks"
           echo ${ks} > res
           rm -rf build*
-          """
+          '''
           ks_tmp=readFile('res').trim()
-          sh "rm -rf res"
+          sh 'rm -rf res'
         script {
           ksFile = "local.ks"
           logFile = "local.log"
