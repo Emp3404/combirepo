@@ -170,11 +170,14 @@ pipeline {
     )
     text(
       name: 'GROUPS_SINGLE',
+      defaultValue: 'Mobile EFL
+      Mobile Dali',
       description:
         """
         The list of package groups id that should be marked.
         """
     )
+    
     text(
       name: 'GROUPS_FORWARD',
       defaultValue: '',
@@ -270,9 +273,6 @@ pipeline {
         if [ ! -z ${params.EXCLUDE} ]; then exclude="-e ${params.EXCLUDE}"; else exclude=""; fi
         if [ ! -z ${params.PREFERABLE} ]; then preferable="-p ${params.PREFERABLE}"; else preferable=""; fi
         if [ ! -z ${params.GROUPS_SINGLE} ]; then groups_single="--groups-single ${params.GROUPS_SINGLE}"; else groups_single=""; fi
-        if [ ! -z ${params.GROUPS_FORWARD} ]; then groups_forward="--groups-forward ${params.GROUPS_FORWARD}"; else groups_forward=""; fi
-        if [ ! -z ${params.GROUPS_BACKWARD} ]; then groups_backward="--groups-backward ${params.GROUPS_BACKWARD}"; else groups_backward=""; fi
-
         mkdir -p ${micDir}
         mkdir -p ${cacheDir}
 
