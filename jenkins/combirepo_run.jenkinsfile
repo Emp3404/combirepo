@@ -170,7 +170,7 @@ pipeline {
     )
     text(
       name: 'GROUPS_SINGLE',
-      defaultValue: 'Mobile EFL' 'Mobile Dali',
+      defaultValue: 'Mobile EFL\nMobile Dali',
       description:
         """
         The list of package groups id that should be marked.
