@@ -117,14 +117,6 @@ pipeline {
       choices: 'armv7l\ni686\nx86_64\naarch64',
       description: 'Specify repo architecture (in OBS/MIC notation).'
     )
-    string(
-      name: 'KICKSTART_FILE',
-      defaultValue: '',
-      description:
-        """
-        URL of kickstart file used as a template.
-        """
-    )
     text(
       name: 'FORWARD',
       defaultValue: '',
@@ -167,30 +159,6 @@ pipeline {
         """
         The list of packages that should be prefered in case of
         "have choice" problem.
-        """
-    )
-    text(
-      name: 'GROUPS_SINGLE',
-      defaultValue: '',
-      description:
-        """
-        The list of package groups id that should be marked.
-        """
-    )
-    text(
-      name: 'GROUPS_FORWARD',
-      defaultValue: '',
-      description:
-        """
-        The list of package groups id that should be marked.
-        """
-    )
-    text(
-      name: 'GROUPS_BACKWARD',
-      defaultValue: '',
-      description:
-        """
-        The list of package groups id that should be marked.
         """
     )
   }
