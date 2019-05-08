@@ -81,7 +81,7 @@ pipeline {
     )
     string(
       name: 'OBS_ACCOUNT_ID',
-      defaultValue: '',
+      defaultValue: 'spin_user',
       description:
         """
         Jenkins credentials ID of OBS account.
@@ -170,11 +170,7 @@ pipeline {
     )
     text(
       name: 'GROUPS_SINGLE',
-      defaultValue: 'Generic Multimedia
-                     Mobile Multimedia
-                     Mobile Bluetooth
-                     Mobile Web Framework
-                     Mobile Telephony',
+      defaultValue: 'Generic Multimedia, Mobile Multimedia, Mobile Bluetooth, Mobile Web Framework, Mobile Telephony',
       description:
         """
         The list of package groups id that should be marked.
