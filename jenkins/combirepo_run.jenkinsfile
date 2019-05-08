@@ -49,16 +49,16 @@ pipeline {
           logFile = "local.log"
           pkgFile = "local.packages"
           micFile = "/etc/mic/mic.conf"
-          micDir = ${params.OUTDIR}
-          cacheDir = ${params.CACHEDIR}
+          micDir = params.OUTDIR
+          cacheDir = params.CACHEDIR
           pkgURL = ks_tmp.replace('.ks','.packages')
           pkgTmp = "tmp.packages"
           unified_repo_name=""
           unified_asan_repo_name=""
-          if (${params.ARCH} == "armv7l") {
+          if (params.ARCH == "armv7l") {
             unified_repo_name="unified-standard"
             unified_asan_repo_name="unified-standard-asan"
-          } else if (${params.ARCH} == "i686") {
+          } else if (params.ARCH == "i686") {
             unified_repo_name="unified-emulator"
             unified_asan_repo_name="unified-emulator-asan"
           }
