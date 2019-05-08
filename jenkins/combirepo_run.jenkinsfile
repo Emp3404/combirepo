@@ -13,7 +13,7 @@ def ks_tmp
 pipeline {
   agent {
     docker {
-      image "${params.DOCKER_IMAGE}"
+      image "${DOCKER_IMAGE}"
       args "--privileged -u root:root"
     }
   }
@@ -24,145 +24,8 @@ pipeline {
   }
 
   environment {
-    OBS = credentials("${params.OBS_ACCOUNT_ID}")
+    OBS = credentials("${OBS_ACCOUNT_ID}")
   }
-
-
-  parameters {
-    string(
-      name: 'DOCKER_IMAGE',
-      defaultValue: 'alyupa/combirepo',
-      description:
-        """
-        Docker image to pull.
-        """
-    )
-    booleanParam(
-      name: 'MIRROR',
-      defaultValue: true,
-      description:
-        """
-        Take packages from non-marked repository if can't find in marked one.
-        Useful if build in marked repository could not be completed in full due to some limitations.
-        """
-    )
-    booleanParam(
-      name: 'GREEDY',
-      defaultValue: false,
-      description:
-        """
-        Greedy mode: get as much packages from marked repository as possible, and get rest from non-marked repository.
-        Useful for massive builds: LTO enabling for whole project, massive sanitizing, compiler options experiments.
-        """
-    )
-    booleanParam(
-      name: 'DISABLE_RPM_PATCHING',
-      defaultValue: false,
-      description:
-        """
-        Disable patching of RPM packages in order to make the build faster.
-        """
-    )
-    booleanParam(
-      name: 'DEBUG',
-      defaultValue: true,
-      description:
-        """
-        Enable debug mode (temporaries will be saved). USE WITH CAUTION: produces lots of files.
-        """
-    )
-    booleanParam(
-      name: 'VERBOSE',
-      defaultValue: true,
-      description:
-        """
-        Enable verbose mode: Produces a lot of output, usually helps to identify the issue root cause
-        if the tool doesn't work as intender.
-        """
-    )
-    string(
-      name: 'OBS_ACCOUNT_ID',
-      defaultValue: 'spin_user',
-      description:
-        """
-        Jenkins credentials ID of OBS account.
-        """
-    )
-    string(
-      name: 'CACHEDIR',
-      defaultValue: 'tmp',
-      description:
-        """
-        Path to cache directory for the tool.
-        """
-    )
-    string(
-      name: 'OUTDIR',
-      defaultValue: 'mic-output',
-      description:
-        """
-        Output directory for MIC.
-        """
-    )
-    string(
-      name: 'JOBS_NUMBER',
-      defaultValue: '1',
-      description:
-        """
-        Number of parallel jobs.
-        """
-    )
-    choice(
-      name: 'ARCH',
-      choices: 'armv7l\ni686\nx86_64\naarch64',
-      description: 'Specify repo architecture (in OBS/MIC notation).'
-    )
-    text(
-      name: 'FORWARD',
-      defaultValue: '',
-      description:
-        """
-        The list of packages that should be marked with all its
-        forward dependencies.
-        """
-    )
-    text(
-      name: 'BACKWARD',
-      defaultValue: '',
-      description:
-        """
-        The list of packages that should be marked with all its
-        backward dependencies (i. e. dependees).
-        """
-    )
-    text(
-      name: 'SINGLE',
-      defaultValue: '',
-      description:
-        """
-        The list of packages that should be marked.
-        """
-    )
-    text(
-      name: 'EXCLUDE',
-      defaultValue: '',
-      description:
-        """
-        The list of packages that should be excluded from the
-        final list of marked packages.
-        """
-    )
-    text(
-      name: 'PREFERABLE',
-      defaultValue: '',
-      description:
-        """
-        The list of packages that should be prefered in case of
-        "have choice" problem.
-        """
-    )
-  }
-
 
   stages {
     stage('Parameters initialization') {
@@ -186,16 +49,16 @@ pipeline {
           logFile = "local.log"
           pkgFile = "local.packages"
           micFile = "/etc/mic/mic.conf"
-          micDir = params.OUTDIR
-          cacheDir = params.CACHEDIR
+          micDir = ${OUTDIR}
+          cacheDir = ${CACHEDIR}
           pkgURL = ks_tmp.replace('.ks','.packages')
           pkgTmp = "tmp.packages"
           unified_repo_name=""
           unified_asan_repo_name=""
-          if (params.ARCH == "armv7l") {
+          if (${ARCH} == "armv7l") {
             unified_repo_name="unified-standard"
             unified_asan_repo_name="unified-standard-asan"
-          } else if (params.ARCH == "i686") {
+          } else if (${ARCH} == "i686") {
             unified_repo_name="unified-emulator"
             unified_asan_repo_name="unified-emulator-asan"
           }
@@ -237,7 +100,7 @@ pipeline {
           echo "Packages file not found!"
           exit 1
         else
-          cat ${pkgTmp} | awk '{print \$1}' | sed -e 's|.${params.ARCH}||g' | sed -e 's|.noarch||g' | sort -n > ${pkgFile}
+          cat ${pkgTmp} | awk '{print \$1}' | sed -e 's|.${ARCH}||g' | sed -e 's|.noarch||g' | sort -n > ${pkgFile}
         fi
         
         wget ${ks_tmp} -O ${ksFile} --user ${OBS_USR} --password ${OBS_PSW}
@@ -255,19 +118,19 @@ pipeline {
         sed -i "/base-standard-asan/d" ${ksFile}
         sed -i "s/%prepackages/%prepackages\\nlibasan/g" ${ksFile}
 
-        if ${params.MIRROR}; then mirror="--mirror"; else mirror=""; fi
-        if ${params.GREEDY}; then greedy="--greedy"; else greedy=""; fi
-        if ${params.DISABLE_RPM_PATCHING}; then rpm_patching="--disable-rpm-patching"; else rpm_patching=""; fi
-        if ${params.DEBUG}; then debug="--debug"; else debug=""; fi
-        if ${params.VERBOSE}; then verbose="--verbose"; else verbose=""; fi
-        if [ ! -z ${params.FORWARD} ]; then forward="-f ${params.FORWARD}"; else forward=""; fi
-        if [ ! -z ${params.BACKWARD} ]; then backward="-b ${params.BACKWARD}"; else backward=""; fi
-        if [ ! -z ${params.SINGLE} ]; then single="-s ${params.SINGLE}"; else single=""; fi
-        if [ ! -z ${params.EXCLUDE} ]; then exclude="-e ${params.EXCLUDE}"; else exclude=""; fi
-        if [ ! -z ${params.PREFERABLE} ]; then preferable="-p ${params.PREFERABLE}"; else preferable=""; fi
-        if [ ! -z ${params.GROUPS_SINGLE} ]; then groups_single="--groups-single ${params.GROUPS_SINGLE}"; else groups_single=""; fi
-        if [ ! -z ${params.GROUPS_FORWARD} ]; then groups_forward="--groups-forward ${params.GROUPS_FORWARD}"; else groups_forward=""; fi
-        if [ ! -z ${params.GROUPS_BACKWARD} ]; then groups_backward="--groups-backward ${params.GROUPS_BACKWARD}"; else groups_backward=""; fi
+        if ${MIRROR}; then mirror="--mirror"; else mirror=""; fi
+        if ${GREEDY}; then greedy="--greedy"; else greedy=""; fi
+        if ${DISABLE_RPM_PATCHING}; then rpm_patching="--disable-rpm-patching"; else rpm_patching=""; fi
+        if ${DEBUG}; then debug="--debug"; else debug=""; fi
+        if ${VERBOSE}; then verbose="--verbose"; else verbose=""; fi
+        if [ ! -z ${FORWARD} ]; then forward="-f ${FORWARD}"; else forward=""; fi
+        if [ ! -z ${BACKWARD} ]; then backward="-b ${BACKWARD}"; else backward=""; fi
+        if [ ! -z ${SINGLE} ]; then single="-s ${SINGLE}"; else single=""; fi
+        if [ ! -z ${EXCLUDE} ]; then exclude="-e ${EXCLUDE}"; else exclude=""; fi
+        if [ ! -z ${PREFERABLE} ]; then preferable="-p ${PREFERABLE}"; else preferable=""; fi
+        if [ ! -z ${GROUPS_SINGLE} ]; then groups_single="--groups-single ${GROUPS_SINGLE}"; else groups_single=""; fi
+        if [ ! -z ${GROUPS_FORWARD} ]; then groups_forward="--groups-forward ${GROUPS_FORWARD}"; else groups_forward=""; fi
+        if [ ! -z ${GROUPS_BACKWARD} ]; then groups_backward="--groups-backward ${GROUPS_BACKWARD}"; else groups_backward=""; fi
 
         mkdir -p ${micDir}
         mkdir -p ${cacheDir}
@@ -276,8 +139,8 @@ pipeline {
 
         mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
 
-        combirepo -A ${params.ARCH} -k ${ksFile} --packages-file ${pkgFile} --user ${OBS_USR} --password ${OBS_PSW} \
-          -o ${micDir} -l ${logFile} --tmp-dir ${cacheDir} -j ${params.JOBS_NUMBER} \
+        combirepo -A ${ARCH} -k ${ksFile} --packages-file ${pkgFile} --user ${OBS_USR} --password ${OBS_PSW} \
+          -o ${micDir} -l ${logFile} --tmp-dir ${cacheDir} -j ${JOBS_NUMBER} \
           \${greedy} \${mirror} \${rpm_patching} \${debug} \${verbose} \
           --regenerate-repodata --preferring-strategy big --skip-version-mismatch --mic-config ${micFile} \
           -S asan-runtime-env \
