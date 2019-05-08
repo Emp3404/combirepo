@@ -20,7 +20,6 @@ pipeline {
 
   options {
     skipDefaultCheckout true
-    buildDiscarder(logRotator(numToKeepStr: '20', artifactNumToKeepStr: '20'))
   }
 
   environment {
@@ -31,8 +30,7 @@ pipeline {
     stage('Parameters initialization') {
       steps {
           
-        script {
-        
+        script {        
           sh '''
           wget -q 'http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/build.xml' --user ${OBS_USR} --password ${OBS_PSW}
           ks=$(cat *.xml | grep san-tizen-5.5-unified-asan_)
@@ -43,7 +41,6 @@ pipeline {
           '''
           ks_tmp=readFile('res').trim()
           sh 'rm -rf res'
-        
         
           ksFile = "local.ks"
           logFile = "local.log"
