@@ -82,7 +82,7 @@ pipeline {
     )
     string(
       name: 'OBS_ACCOUNT_ID',
-      defaultValue: '',
+      defaultValue: 'spin_user',
       description:
         """
         Jenkins credentials ID of OBS account.
