@@ -168,30 +168,6 @@ pipeline {
         "have choice" problem.
         """
     )
-    text(
-      name: 'GROUPS_SINGLE',
-      defaultValue: 'Generic Multimedia',
-      description:
-        """
-        The list of package groups id that should be marked.
-        """
-    )
-    text(
-      name: 'GROUPS_FORWARD',
-      defaultValue: '',
-      description:
-        """
-        The list of package groups id that should be marked.
-        """
-    )
-    text(
-      name: 'GROUPS_BACKWARD',
-      defaultValue: '',
-      description:
-        """
-        The list of package groups id that should be marked.
-        """
-    )
   }
 
 
