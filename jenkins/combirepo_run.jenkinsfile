@@ -170,7 +170,11 @@ pipeline {
     )
     text(
       name: 'GROUPS_SINGLE',
-      defaultValue: '',
+      defaultValue: 'Generic Multimedia
+                     Mobile Multimedia
+                     Mobile Bluetooth
+                     Mobile Web Framework
+                     Mobile Telephony',
       description:
         """
         The list of package groups id that should be marked.
