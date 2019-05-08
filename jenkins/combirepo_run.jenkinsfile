@@ -203,7 +203,7 @@ pipeline {
         script {
         
           sh '''
-          wget -q 'http://m.ahmadullin:Sun''\044''357D@10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/build.xml'
+          wget -q 'http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/build.xml' --user ${OBS_USR} --password ${OBS_PSW}
           ks=$(cat *.xml | grep san-tizen-5.5-unified-asan_)
           ks=$(echo $ks | cut -c5-41)
           ks="http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/images/standard/mobile-wayland-armv7l-tm1/"$ks"_mobile-wayland-armv7l-tm1.ks"
