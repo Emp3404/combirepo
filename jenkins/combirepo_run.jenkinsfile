@@ -65,31 +65,7 @@ pipeline {
         }
       }
     }
-    stage('Job initialization') {
-      steps {
-        script {
-          // Add job description
-          currentBuild.rawBuild.project.description =
-            """
-            This job provides an interface to build partially sanitized images with combirepo tool.
-            """
-        }
-      }
-    }
-    stage('Check parameters') {
-      steps {
-        script {
-          def checkStr = { String param, String name ->
-            if (param.isEmpty()) {
-              println "Error: " + name + " is required!"
-              return 1
-            } else {
-              return 0
-            }
-          }    
-        }
-      }
-    }
+    
     stage('Build') {
       steps {
         sh """
