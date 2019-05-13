@@ -201,8 +201,7 @@ pipeline {
       steps {
           
         script {
-          sh '''          
-          echo ${params.GROUPS_SINGLE}
+          sh '''
           wget -q 'http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/build.xml' --user ${OBS_USR} --password ${OBS_PSW}
           ks=$(cat *.xml | grep san-tizen-5.5-unified-asan_)
           ks=$(echo $ks | cut -c5-41)
@@ -279,7 +278,9 @@ pipeline {
         echo "${BUILD_URL}" > ${micDir}/info.txt
 
         mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
-
+        
+        echo "${params.GROUPS_SINGLE}"
+        
         combirepo -A ${params.ARCH} -k ${ksFile} --packages-file ${pkgFile} --user ${OBS_USR} --password ${OBS_PSW} \
           -o ${micDir} -l ${logFile} --tmp-dir ${cacheDir} -j ${params.JOBS_NUMBER} \
           \${greedy} \${mirror} \${rpm_patching} \${debug} \${verbose} \
