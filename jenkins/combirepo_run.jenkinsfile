@@ -170,8 +170,7 @@ pipeline {
     )
     text(
       name: 'GROUPS_SINGLE',
-      defaultValue: 'Mobile EFL
-      Mobile Dali',
+      defaultValue: '',
       description:
         """
         The list of package groups id that should be marked.
@@ -201,7 +200,8 @@ pipeline {
     stage('Parameters initialization') {
       steps {
           
-        script {        
+        script {
+          echo ${params.GROUPS_SINGLE}
           sh '''
           wget -q 'http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/build.xml' --user ${OBS_USR} --password ${OBS_PSW}
           ks=$(cat *.xml | grep san-tizen-5.5-unified-asan_)
