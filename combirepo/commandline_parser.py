@@ -132,7 +132,7 @@ class CommandlineParser():
             dest="preferable", help="The name of package that should be "
             "prefered in case of \"have choice\" problem.")
         self._parser.add_argument(
-            "--groups-single", action="append", type=str,
+            "--groups-single", nargs='*', type=str,
             dest="groups_single", help="The id of package groups that should "
             "be marked.")
         self._parser.add_argument(
