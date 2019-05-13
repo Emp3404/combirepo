@@ -279,8 +279,8 @@ pipeline {
 
         mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
         
-        groups_single='--groups-single generic-base --groups-single mobile-base --groups-single generic-console-tools --groups-single mobile-packaging --groups-single mobile-adaptation'
-
+        echo $groups_single
+        
         combirepo -A ${params.ARCH} -k ${ksFile} --packages-file ${pkgFile} --user ${OBS_USR} --password ${OBS_PSW} \
           -o ${micDir} -l ${logFile} --tmp-dir ${cacheDir} -j ${params.JOBS_NUMBER} \
           \${greedy} \${mirror} \${rpm_patching} \${debug} \${verbose} \
