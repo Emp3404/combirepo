@@ -170,7 +170,7 @@ pipeline {
     )
     text(
       name: 'GROUPS_SINGLE',
-      defaultValue: 'Generic Base\nMobile Base\nMobile Console\nTools Mobile\nAdaptation Mobile\nWayland Generic\nDesktop Applications',
+      defaultValue: '',
       description:
         """
         The list of package groups id that should be marked.
@@ -271,7 +271,7 @@ pipeline {
         if [ ! -z ${params.SINGLE} ]; then single="-s ${params.SINGLE}"; else single=""; fi
         if [ ! -z ${params.EXCLUDE} ]; then exclude="-e ${params.EXCLUDE}"; else exclude=""; fi
         if [ ! -z ${params.PREFERABLE} ]; then preferable="-p ${params.PREFERABLE}"; else preferable=""; fi
-        if [ ! -z ${params.GROUPS_SINGLE} ]; then groups_single="--groups-single ${params.GROUPS_SINGLE}"; else groups_single=""; fi
+        if [ ! -z ${params.GROUPS_SINGLE} ]; then groups_single="--groups-single "${params.GROUPS_SINGLE}""; else groups_single=""; fi
         mkdir -p ${micDir}
         mkdir -p ${cacheDir}
 
@@ -279,7 +279,8 @@ pipeline {
 
         mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
         
-        echo "${params.GROUPS_SINGLE}"
+        groups_single="--groups-single Generic Base\nMobile Base\nMobile Console\nTools Mobile\nAdaptation Mobile\nWayland Generic\nDesktop Applications"
+        echo "${groups_single}"
         
         combirepo -A ${params.ARCH} -k ${ksFile} --packages-file ${pkgFile} --user ${OBS_USR} --password ${OBS_PSW} \
           -o ${micDir} -l ${logFile} --tmp-dir ${cacheDir} -j ${params.JOBS_NUMBER} \
