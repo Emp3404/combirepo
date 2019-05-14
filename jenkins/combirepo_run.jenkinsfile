@@ -209,7 +209,7 @@ pipeline {
           echo ${ks} > res
           rm -rf build*
           '''
-          ks_tmp="http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/san-tizen-5.5-unified-asan_20190505.1/images/standard/mobile-wayland-armv7l-tm1/san-tizen-5.5-unified-asan_20190505.1_mobile-wayland-armv7l-tm1.ks"
+          ks_tmp=readFile('res').trim()
           sh 'rm -rf res'
         
           ksFile = "local.ks"
@@ -218,7 +218,7 @@ pipeline {
           micFile = "/etc/mic/mic.conf"
           micDir = params.OUTDIR
           cacheDir = params.CACHEDIR
-          pkgURL = "http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/san-tizen-5.5-unified-asan_20190505.1/images/standard/mobile-wayland-armv7l-tm1/san-tizen-5.5-unified-asan_20190505.1_mobile-wayland-armv7l-tm1.packages"
+          pkgURL = ks_tmp.replace('.ks','.packages')
           pkgTmp = "tmp.packages"
           unified_repo_name=""
           unified_asan_repo_name=""
@@ -277,8 +277,9 @@ pipeline {
 
         echo "${BUILD_URL}" > ${micDir}/info.txt
 
-        mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
+        mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc        
         
+        groups_single='--groups-single generic-base --groups-single mobile-base --groups-single generic-console-tools --groups-single mobile-packaging --groups-single mobile-adaptation'
         echo $groups_single
         
         combirepo -A ${params.ARCH} -k ${ksFile} --packages-file ${pkgFile} --user ${OBS_USR} --password ${OBS_PSW} \
