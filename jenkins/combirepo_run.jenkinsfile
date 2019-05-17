@@ -279,8 +279,24 @@ pipeline {
 
         mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc        
         
-        groups_single='--groups-single generic-base --groups-single mobile-base --groups-single generic-console-tools --groups-single mobile-packaging --groups-single mobile-adaptation'
+        tmp_day=$(date '+%a')
+        case $tmp_day in
+            Mon)
+	            groups_single='--groups-single generic-base --groups-single mobile-base --groups-single generic-console-tools --groups-single mobile-packaging --groups-single mobile-adaptation'
+	            ;;
+            Thu)
+	            groups_single='--groups-single generic-base --groups-single mobile-base --groups-single generic-console-tools --groups-single mobile-packaging --groups-single mobile-adaptation --groups-single generic-desktop-applications'
+	            ;;
+            Wed)
+	            groups_single='--groups-single generic-multimedia --groups-single  generic-crosswalk'
+              ;;
+            Thu)
+	            groups_single='--groups-single mobile-web-framework --groups-single mobile-bluetooth --groups-single mobile-mbr-3parts --groups-single mobile-user --groups-single mobile-license --groups-single generic-security'
+              ;;
+        esac
         echo $groups_single
+
+        
         
         combirepo -A ${params.ARCH} -k ${ksFile} --packages-file ${pkgFile} --user ${OBS_USR} --password ${OBS_PSW} \
           -o ${micDir} -l ${logFile} --tmp-dir ${cacheDir} -j ${params.JOBS_NUMBER} \
