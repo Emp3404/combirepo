@@ -282,17 +282,17 @@ pipeline {
         tmp_day=$(date '+%a')
         case $tmp_day in
             Mon)
-	    	groups_single='--groups-single generic-base --groups-single mobile-base --groups-single generic-console-tools --groups-single mobile-packaging --groups-single mobile-adaptation'
+	    	groups_single='--groups-single generic-base --groups-single mobile-base --groups-single mobile-adaptation --groups-single generic-desktop-applications --groups-single mobile-console-tools --groups-single mobile-wayland'
 	        ;;
             Thu)
-	        groups_single='--groups-single generic-base --groups-single mobile-base --groups-single generic-console-tools --groups-single mobile-packaging --groups-single mobile-adaptation --groups-single generic-desktop-applications'
+	    	groups_single='--groups-single mobile-middleware'
 	        ;;
             Wed)
-	      groups_single='--groups-single generic-multimedia --groups-single  generic-crosswalk'
-              ;;
+       	    	groups_single='--groups-single mobile-dali --groups-single mobile-applications --groups-single mobile-efl --groups-single mobile-enlightnement --groups-single mobile-input-framework --groups-single mobile-connectivity-framework'
+              	;;
             Thu)
-	      groups_single='--groups-single mobile-web-framework --groups-single mobile-bluetooth --groups-single mobile-mbr-3parts --groups-single mobile-user --groups-single mobile-license --groups-single generic-security'
-              ;;
+	    	groups_single='--groups-single generic-multimedia --groups-single mobile-multimedia --groups-single mobile-bluetooth --groups-single mobile-web-framework --groups-single mobile-telephony'
+	    	;;
         esac
         echo $groups_single
 
