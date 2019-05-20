@@ -9,7 +9,6 @@ def unified_asan_repo_name
 def pkgURL
 def pkgTmp
 def ks_tmp
-def san_groups
 
 
 pipeline {
@@ -204,6 +203,7 @@ pipeline {
         script {
           sh '''
 	  #!/bin/bash
+	  echo $(date)
 	  curl -u ${OBS_USR}:"${OBS_PSW}" http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/ > tmp.txt
 	  a=$(python <(echo '
 builds = list()
@@ -218,32 +218,14 @@ with open("tmp.txt", "r") as f:
           echo ${ks} > tmp.txt
           '''
 	  ks_tmp=readFile('tmp.txt').trim()
-	 
-	  def groups = sh (returnStdout: true, script: '''date +%a''').split()
-	  switch(groups){
-	  case "Mon":
-	  	san_groups="a"
-	  	break
-	  case "Tue":
-	  	break
-	  case "Wed":
-	  	break
-	  case "Thu":
-	  	break
-	  }
-	  echo groups
-	  echo san_groups
-	  
           sh 'rm -rf tmp.txt'        
           ksFile = "local.ks"
           logFile = "local.log"
           pkgFile = "local.packages"
           micFile = "/etc/mic/mic.conf"
           micDir = params.OUTDIR
-	  echo micDir
           cacheDir = params.CACHEDIR
           pkgURL = ks_tmp.replace('.ks','.packages')
-	  echo pkgURL
           pkgTmp = "tmp.packages"
           unified_repo_name=""
           unified_asan_repo_name=""
