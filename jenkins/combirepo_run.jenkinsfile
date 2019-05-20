@@ -202,6 +202,7 @@ pipeline {
           
         script {
           sh '''
+	  #!/bin/bash
           wget -q 'http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/build.xml' --user ${OBS_USR} --password ${OBS_PSW}
           ks=$(cat *.xml | grep san-tizen-5.5-unified-asan_)
           ks=$(echo $ks | cut -c5-41)
@@ -274,7 +275,7 @@ pipeline {
         if [ ! -z ${params.GROUPS_SINGLE} ]; then groups_single="--groups-single "${params.GROUPS_SINGLE}""; else groups_single=""; fi
         mkdir -p ${micDir}
         mkdir -p ${cacheDir}
-        echo ${BUILD_URL} > ${micDir}/info.txt
+        echo "${BUILD_URL}" > "${micDir}"/info.txt
 
         mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc        
         
