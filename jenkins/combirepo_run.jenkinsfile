@@ -256,8 +256,8 @@ pipeline {
         if [ ! -f ${ksFile} ]; then
             echo "Kickstart file not found!"
             exit 1
-        fi
-
+        fi	
+	echo ${micDir}
         unified_repo=`cat ${ksFile} | grep 'repo --name=${unified_repo_name} --baseurl=' | egrep -o 'https?://[^ ]+'`
         unified_asan_repo=`cat ${ksFile} | grep 'repo --name=${unified_asan_repo_name} --baseurl=' | egrep -o 'https?://[^ ]+'`
         base_repo=`cat ${ksFile} | grep 'repo --name=base-standard --baseurl=' | egrep -o 'https?://[^ ]+'`
