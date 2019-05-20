@@ -203,15 +203,22 @@ pipeline {
         script {
           sh '''
 	  #!/bin/bash
-          wget -q "http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/build.xml" --user ${OBS_USR} --password ${OBS_PSW}
-          ks=$(cat *.xml | grep san-tizen-5.5-unified-asan_)
-          ks=$(echo $ks | cut -c5-41)
-          ks="http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/images/standard/mobile-wayland-armv7l-tm1/"$ks"_mobile-wayland-armv7l-tm1.ks"
-          echo ${ks} > res
-          rm -rf build*
+
+	  curl -u ${OBS_USR}:"${OBS_PSW}" http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/ > tmp.txt
+	  a=$(python <(echo '
+	      a = list()
+	      with open("tmp.txt", "r") as f:
+    	      for line in f:
+                  if "san-tizen-5.5-unified-asan_" in line:
+	              tmp = line.find("san-tizen-5.5")
+                      a.append(line[tmp:tmp+37])
+    	      print(max(a))
+          '))
+          ks="http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/images/standard/mobile-wayland-armv7l-tm1/"$a"_mobile-wayland-armv7l-tm1.ks"
+          echo ${ks} > tmp.txt
           '''
           ks_tmp=readFile('res').trim()
-          sh 'rm -rf res'
+          sh 'rm -rf tmp.txt'
         
           ksFile = "local.ks"
           logFile = "local.log"
