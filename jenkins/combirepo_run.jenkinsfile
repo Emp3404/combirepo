@@ -203,7 +203,7 @@ pipeline {
         script {
           sh '''
 	  #!/bin/bash
-          wget -q 'http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/build.xml' --user ${OBS_USR} --password ${OBS_PSW}
+          wget -q "http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/build.xml" --user ${OBS_USR} --password ${OBS_PSW}
           ks=$(cat *.xml | grep san-tizen-5.5-unified-asan_)
           ks=$(echo $ks | cut -c5-41)
           ks="http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/images/standard/mobile-wayland-armv7l-tm1/"$ks"_mobile-wayland-armv7l-tm1.ks"
@@ -236,7 +236,7 @@ pipeline {
     
     stage('Build') {
       steps {
-        sh """
+        sh '''
 	echo "first point"
 	echo ${micDir}
         rm -rf ${micDir} ${cacheDir} ./*
@@ -249,7 +249,7 @@ pipeline {
           echo "Packages file not found!"
           exit 1
         else
-          cat ${pkgTmp} | awk '{print \$1}' | sed -e 's|.${params.ARCH}||g' | sed -e 's|.noarch||g' | sort -n > ${pkgFile}
+          cat ${pkgTmp} | awk \'{print \$1}\' | sed -e \'s|.${params.ARCH}||g\' | sed -e \'s|.noarch||g\' | sort -n > ${pkgFile}
         fi
         
         wget ${ks_tmp} -O ${ksFile} --user ${OBS_USR} --password ${OBS_PSW}
@@ -258,10 +258,10 @@ pipeline {
             exit 1
         fi	
 	echo ${micDir}
-        unified_repo=`cat ${ksFile} | grep 'repo --name=${unified_repo_name} --baseurl=' | egrep -o 'https?://[^ ]+'`
-        unified_asan_repo=`cat ${ksFile} | grep 'repo --name=${unified_asan_repo_name} --baseurl=' | egrep -o 'https?://[^ ]+'`
-        base_repo=`cat ${ksFile} | grep 'repo --name=base-standard --baseurl=' | egrep -o 'https?://[^ ]+'`
-        base_asan_repo=`cat ${ksFile} | grep 'repo --name=base-standard-asan --baseurl=' | egrep -o 'https?://[^ ]+'`
+        unified_repo=`cat ${ksFile} | grep \'repo --name=${unified_repo_name} --baseurl=\' | egrep -o \'https?://[^ ]+\'`
+        unified_asan_repo=`cat ${ksFile} | grep \'repo --name=${unified_asan_repo_name} --baseurl=\' | egrep -o \'https?://[^ ]+\'`
+        base_repo=`cat ${ksFile} | grep \'repo --name=base-standard --baseurl=\' | egrep -o \'https?://[^ ]+\'`
+        base_asan_repo=`cat ${ksFile} | grep \'repo --name=base-standard-asan --baseurl=\' | egrep -o \'https?://[^ ]+\'`
 	
 	echo ${micDir}
         sed -i "/${unified_asan_repo_name}/d" ${ksFile}
@@ -291,19 +291,19 @@ pipeline {
 
         mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc        
         
-        tmp_day=$(date '+%a')
+        tmp_day=$(date \'+%a\')
         case $tmp_day in
             Mon)
-	    	groups_single='--groups-single generic-base --groups-single mobile-base --groups-single mobile-adaptation --groups-single generic-desktop-applications --groups-single mobile-console-tools --groups-single mobile-wayland'
+	    	groups_single=\'--groups-single generic-base --groups-single mobile-base --groups-single mobile-adaptation --groups-single generic-desktop-applications --groups-single mobile-console-tools --groups-single mobile-wayland\'
 	        ;;
             Thu)
-	    	groups_single='--groups-single mobile-middleware'
+	    	groups_single=\'--groups-single mobile-middleware\'
 	        ;;
             Wed)
-       	    	groups_single='--groups-single mobile-dali --groups-single mobile-applications --groups-single mobile-efl --groups-single mobile-enlightnement --groups-single mobile-input-framework --groups-single mobile-connectivity-framework'
+       	    	groups_single=\'--groups-single mobile-dali --groups-single mobile-applications --groups-single mobile-efl --groups-single mobile-enlightnement --groups-single mobile-input-framework --groups-single mobile-connectivity-framework\'
               	;;
             Thu)
-	    	groups_single='--groups-single generic-multimedia --groups-single mobile-multimedia --groups-single mobile-bluetooth --groups-single mobile-web-framework --groups-single mobile-telephony'
+	    	groups_single=\'--groups-single generic-multimedia --groups-single mobile-multimedia --groups-single mobile-bluetooth --groups-single mobile-web-framework --groups-single mobile-telephony\'
 	    	;;
         esac
         echo $groups_single
@@ -319,7 +319,7 @@ pipeline {
           \${groups_single} \${groups_forward} \${groups_backward} \
           ${unified_repo_name} \${unified_repo} \${unified_asan_repo} \
           base-standard \${base_repo} \${base_asan_repo}
-        """
+        '''
       }
     }
   }
