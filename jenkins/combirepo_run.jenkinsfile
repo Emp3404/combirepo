@@ -216,16 +216,18 @@ with open("tmp.txt", "r") as f:
           echo ${ks} > tmp.txt
           '''
 	  ks_tmp=readFile('tmp.txt').trim()
+	  echo ks_tmp
 	  sh 'cat tmp.txt'
-	  sh 'echo $ks_tmp'
           sh 'rm -rf tmp.txt'        
           ksFile = "local.ks"
           logFile = "local.log"
           pkgFile = "local.packages"
           micFile = "/etc/mic/mic.conf"
           micDir = params.OUTDIR
+	  echo micDir
           cacheDir = params.CACHEDIR
           pkgURL = ks_tmp.replace('.ks','.packages')
+	  echo pkgURL
           pkgTmp = "tmp.packages"
           unified_repo_name=""
           unified_asan_repo_name=""
