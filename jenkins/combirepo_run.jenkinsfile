@@ -227,8 +227,7 @@ with open("tmp.txt", "r") as f:
           cacheDir = params.CACHEDIR
           pkgURL = ks_tmp.replace('.ks','.packages')
           pkgTmp = "tmp.packages"
-	  sh 'echo ${micDir}'
-	  sh 'echo ${pkgURL}'
+	  sh 'echo ${params.OUTDIR}'
           unified_repo_name=""
           unified_asan_repo_name=""
           if (params.ARCH == "armv7l") {
