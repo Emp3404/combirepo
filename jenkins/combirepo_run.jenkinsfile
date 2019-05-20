@@ -273,8 +273,8 @@ pipeline {
         if [ ! -z ${params.PREFERABLE} ]; then preferable="-p ${params.PREFERABLE}"; else preferable=""; fi
         if [ ! -z ${params.GROUPS_SINGLE} ]; then groups_single="--groups-single "${params.GROUPS_SINGLE}""; else groups_single=""; fi
         mkdir -p ${micDir}
-        mkdir -p ${cacheDir}	
-        echo "${BUILD_URL}" > ${micDir}/info.txt
+        mkdir -p ${cacheDir}
+        echo ${BUILD_URL} > ${micDir}/info.txt
 
         mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc        
         
