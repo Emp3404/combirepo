@@ -284,12 +284,12 @@ with open("tmp.txt", "r") as f:
         if [ ! -z ${params.PREFERABLE} ]; then preferable=\'-p ${params.PREFERABLE}\'; else preferable=\'\'; fi
         if [ ! -z ${params.GROUPS_SINGLE} ]; then groups_single=\'--groups-single \'${params.GROUPS_SINGLE}\'\'; else groups_single=""; fi
         
-	mkdir -p ${micDir}
-        mkdir -p ${cacheDir}
+	mkdir -p \"${micDir}\"
+        mkdir -p \"${cacheDir}\"
 
         mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc        
         
-        tmp_day=$(date \'+%a\')
+        tmp_day=\"$(date \'+%a\')\"
         case $tmp_day in
             Mon)
 	    	groups_single=\'--groups-single generic-base --groups-single mobile-base --groups-single mobile-adaptation --groups-single generic-desktop-applications --groups-single mobile-console-tools --groups-single mobile-wayland\'
