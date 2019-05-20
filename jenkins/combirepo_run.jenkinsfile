@@ -212,10 +212,11 @@ with open("tmp.txt", "r") as f:
 	    builds.append(line[tmp:tmp+37])
     print(max(builds))
           '))
-          ks_tmp="http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/images/standard/mobile-wayland-armv7l-tm1/"$a"_mobile-wayland-armv7l-tm1.ks"
-          echo ${ks_tmp} > tmp.txt
+          ks="http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/images/standard/mobile-wayland-armv7l-tm1/"$a"_mobile-wayland-armv7l-tm1.ks"
+          echo ${ks} > tmp.txt
           '''
-
+	  ks_tmp=readFile('tmp.txt').trim()
+	  sh 'cat tmp.txt'
 	  sh 'echo $ks_tmp'
           sh 'rm -rf tmp.txt'        
           ksFile = "local.ks"
