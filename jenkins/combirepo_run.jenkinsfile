@@ -202,9 +202,26 @@ pipeline {
       steps {          
         script {
           sh '''
-	  #!/bin/bash
-	  a=$(date +%a)
-	  echo $a
+	  #!/bin/bash  
+	  
+	  tmp_day=$(date +%a)
+	  san_groups=""
+	  case $tmp_day in
+            Mon)
+	    	san_groups="--groups-single generic-base --groups-single mobile-base --groups-single mobile-adaptation --groups-single generic-desktop-applications --groups-single mobile-console-tools --groups-single mobile-wayland"
+	        ;;
+            Thu)
+	    	san_groups="--groups-single mobile-middleware"
+	        ;;
+            Wed)
+       	    	san_groups="--groups-single mobile-dali --groups-single mobile-applications --groups-single mobile-efl --groups-single mobile-enlightnement --groups-single mobile-input-framework --groups-single mobile-connectivity-framework"
+              	;;
+            Thu)
+	    	san_groups="--groups-single generic-multimedia --groups-single mobile-multimedia --groups-single mobile-bluetooth --groups-single mobile-web-framework --groups-single mobile-telephony"
+	    	;;
+	  esac	  
+	  echo $san_groups
+	  
 	  curl -u ${OBS_USR}:"${OBS_PSW}" http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/ > tmp.txt
 	  a=$(python <(echo '
 builds = list()
