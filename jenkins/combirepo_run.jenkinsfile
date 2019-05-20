@@ -244,7 +244,7 @@ with open("tmp.txt", "r") as f:
     
     stage('Build') {
       steps {
-        sh '''
+        sh """
         rm -rf ${micDir} ${cacheDir} ./*
         wget ${pkgURL} -O ${pkgTmp} --user ${OBS_USR} --password ${OBS_PSW}
         if [ ! -f ${pkgTmp} ]; then
@@ -320,7 +320,7 @@ with open("tmp.txt", "r") as f:
           \${groups_single} \${groups_forward} \${groups_backward} \
           ${unified_repo_name} \${unified_repo} \${unified_asan_repo} \
           base-standard \${base_repo} \${base_asan_repo}
-        '''
+        """
       }
     }
   }
