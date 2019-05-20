@@ -283,6 +283,8 @@ pipeline {
         if [ ! -z ${params.PREFERABLE} ]; then preferable="-p ${params.PREFERABLE}"; else preferable=""; fi
         if [ ! -z ${params.GROUPS_SINGLE} ]; then groups_single="--groups-single "${params.GROUPS_SINGLE}""; else groups_single=""; fi
         mkdir -p ${micDir}
+	
+	echo ${micDir}
         mkdir -p ${cacheDir}
 	echo ${BUILD_URL}
 	echo ${micDir}
