@@ -218,7 +218,6 @@ pipeline {
           pkgFile = "local.packages"
           micFile = "/etc/mic/mic.conf"
           micDir = params.OUTDIR
-	  echo ${micDir}
           cacheDir = params.CACHEDIR
           pkgURL = ks_tmp.replace('.ks','.packages')
           pkgTmp = "tmp.packages"
@@ -238,7 +237,12 @@ pipeline {
     stage('Build') {
       steps {
         sh """
+	echo "first point"
+	echo ${micDir}
         rm -rf ${micDir} ${cacheDir} ./*
+	
+	echo "second point"
+	echo ${micDir}
 
         wget ${pkgURL} -O ${pkgTmp} --user ${OBS_USR} --password ${OBS_PSW}
         if [ ! -f ${pkgTmp} ]; then
