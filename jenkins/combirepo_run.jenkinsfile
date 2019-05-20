@@ -245,6 +245,7 @@ with open("tmp.txt", "r") as f:
     stage('Build') {
       steps {
         sh """
+	#!/bin/bash
         rm -rf ${micDir} ${cacheDir} ./*
         wget ${pkgURL} -O ${pkgTmp} --user ${OBS_USR} --password ${OBS_PSW}
         if [ ! -f ${pkgTmp} ]; then
