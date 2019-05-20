@@ -254,7 +254,7 @@ with open("tmp.txt", "r") as f:
           cat ${pkgTmp} | awk '{print \$1}' | sed -e 's|.${params.ARCH}||g' | sed -e 's|.noarch||g' | sort -n > ${pkgFile}
         fi
 
-        wget ${params.KICKSTART_FILE} -O ${ksFile} --user ${OBS_USR} --password ${OBS_PSW}
+        wget ${ks_tmp} -O ${ksFile} --user ${OBS_USR} --password ${OBS_PSW}
         if [ ! -f ${ksFile} ]; then
             echo "Kickstart file not found!"
             exit 1
