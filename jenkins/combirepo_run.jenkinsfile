@@ -244,52 +244,53 @@ with open("tmp.txt", "r") as f:
     
     stage('Build') {
       steps {
-        sh '''
+        sh """
         rm -rf ${micDir} ${cacheDir} ./*
         wget ${pkgURL} -O ${pkgTmp} --user ${OBS_USR} --password ${OBS_PSW}
         if [ ! -f ${pkgTmp} ]; then
-          echo 'Packages file not found!'
+          echo "Packages file not found!"
           exit 1
         else
-          cat ${pkgTmp} | awk \'{print \$1}\' | sed -e \'s|.${params.ARCH}||g\' | sed -e \'s|.noarch||g\' | sort -n > ${pkgFile}
+          cat ${pkgTmp} | awk '{print \$1}' | sed -e 's|.${params.ARCH}||g' | sed -e 's|.noarch||g' | sort -n > ${pkgFile}
         fi
-        
-        wget ${ks_tmp} -O ${ksFile} --user ${OBS_USR} --password ${OBS_PSW}
+
+        wget ${params.KICKSTART_FILE} -O ${ksFile} --user ${OBS_USR} --password ${OBS_PSW}
         if [ ! -f ${ksFile} ]; then
-            echo 'Kickstart file not found!'
+            echo "Kickstart file not found!"
             exit 1
         fi
-        unified_repo=`cat ${ksFile} | grep \'repo --name=${unified_repo_name} --baseurl=\' | egrep -o \'https?://[^ ]+\'`
-        unified_asan_repo=`cat ${ksFile} | grep \'repo --name=${unified_asan_repo_name} --baseurl=\' | egrep -o \'https?://[^ ]+\'`
-        base_repo=`cat ${ksFile} | grep \'repo --name=base-standard --baseurl=\' | egrep -o \'https?://[^ ]+\'`
-        base_asan_repo=`cat ${ksFile} | grep \'repo --name=base-standard-asan --baseurl=\' | egrep -o \'https?://[^ ]+\'`
-	
-	echo ${micDir}
-        sed -i \"/${unified_asan_repo_name}/d\" ${ksFile}
-        sed -i \"/base-standard-asan/d\" ${ksFile}
-        sed -i \"s/%prepackages/%prepackages\\nlibasan/g\" ${ksFile}
-	
-	echo ${micDir}
-        if ${params.MIRROR}; then mirror=\'--mirror\'; else mirror=\'\'; fi
-        if ${params.GREEDY}; then greedy=\'--greedy\'; else greedy=\'\'; fi
-        if ${params.DISABLE_RPM_PATCHING}; then rpm_patching=\'--disable-rpm-patching\'; else rpm_patching=\'\'; fi
-        if ${params.DEBUG}; then debug=\'--debug\'; else debug=\'\'; fi
-        if ${params.VERBOSE}; then verbose=\'--verbose\'; else verbose=\'\'; fi
-	
-	echo ${micDir}
-        if [ ! -z ${params.FORWARD} ]; then forward=\'-f ${params.FORWARD}\'; else forward=\'\'; fi
-        if [ ! -z ${params.BACKWARD} ]; then backward=\'-b ${params.BACKWARD}\'; else backward=\'\'; fi
-        if [ ! -z ${params.SINGLE} ]; then single=\'-s ${params.SINGLE}\'; else single=\'\'; fi
-        if [ ! -z ${params.EXCLUDE} ]; then exclude=\'-e ${params.EXCLUDE}\'; else exclude=\'\'; fi
-        if [ ! -z ${params.PREFERABLE} ]; then preferable=\'-p ${params.PREFERABLE}\'; else preferable=\'\'; fi
-        if [ ! -z ${params.GROUPS_SINGLE} ]; then groups_single=\'--groups-single \'${params.GROUPS_SINGLE}\'\'; else groups_single=""; fi
-        
-	mkdir -p \"${micDir}\"
-        mkdir -p \"${cacheDir}\"
 
-        mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc        
+        unified_repo=`cat ${ksFile} | grep 'repo --name=${unified_repo_name} --baseurl=' | egrep -o 'https?://[^ ]+'`
+        unified_asan_repo=`cat ${ksFile} | grep 'repo --name=${unified_asan_repo_name} --baseurl=' | egrep -o 'https?://[^ ]+'`
+        base_repo=`cat ${ksFile} | grep 'repo --name=base-standard --baseurl=' | egrep -o 'https?://[^ ]+'`
+        base_asan_repo=`cat ${ksFile} | grep 'repo --name=base-standard-asan --baseurl=' | egrep -o 'https?://[^ ]+'`
+
+        sed -i "/${unified_asan_repo_name}/d" ${ksFile}
+        sed -i "/base-standard-asan/d" ${ksFile}
+        sed -i "s/%prepackages/%prepackages\\nlibasan/g" ${ksFile}
+
+        if ${params.MIRROR}; then mirror="--mirror"; else mirror=""; fi
+        if ${params.GREEDY}; then greedy="--greedy"; else greedy=""; fi
+        if ${params.DISABLE_RPM_PATCHING}; then rpm_patching="--disable-rpm-patching"; else rpm_patching=""; fi
+        if ${params.DEBUG}; then debug="--debug"; else debug=""; fi
+        if ${params.VERBOSE}; then verbose="--verbose"; else verbose=""; fi
+        if [ ! -z ${params.FORWARD} ]; then forward="-f ${params.FORWARD}"; else forward=""; fi
+        if [ ! -z ${params.BACKWARD} ]; then backward="-b ${params.BACKWARD}"; else backward=""; fi
+        if [ ! -z ${params.SINGLE} ]; then single="-s ${params.SINGLE}"; else single=""; fi
+        if [ ! -z ${params.EXCLUDE} ]; then exclude="-e ${params.EXCLUDE}"; else exclude=""; fi
+        if [ ! -z ${params.PREFERABLE} ]; then preferable="-p ${params.PREFERABLE}"; else preferable=""; fi
+        if [ ! -z ${params.GROUPS_SINGLE} ]; then groups_single="--groups-single ${params.GROUPS_SINGLE}"; else groups_single=""; fi
+        if [ ! -z ${params.GROUPS_FORWARD} ]; then groups_forward="--groups-forward ${params.GROUPS_FORWARD}"; else groups_forward=""; fi
+        if [ ! -z ${params.GROUPS_BACKWARD} ]; then groups_backward="--groups-backward ${params.GROUPS_BACKWARD}"; else groups_backward=""; fi
+
+        mkdir -p ${micDir}
+        mkdir -p ${cacheDir}
+
+        echo "${BUILD_URL}" > ${micDir}/info.txt
+
+        mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc    
         
-        tmp_day=\"$(date \'+%a\')\"
+        tmp_day=$(date '+%a')
         case $tmp_day in
             Mon)
 	    	groups_single=\'--groups-single generic-base --groups-single mobile-base --groups-single mobile-adaptation --groups-single generic-desktop-applications --groups-single mobile-console-tools --groups-single mobile-wayland\'
@@ -304,9 +305,7 @@ with open("tmp.txt", "r") as f:
 	    	groups_single=\'--groups-single generic-multimedia --groups-single mobile-multimedia --groups-single mobile-bluetooth --groups-single mobile-web-framework --groups-single mobile-telephony\'
 	    	;;
         esac
-        echo $groups_single
-
-        
+        echo $groups_single        
         
         combirepo -A ${params.ARCH} -k ${ksFile} --packages-file ${pkgFile} --user ${OBS_USR} --password ${OBS_PSW} \
           -o ${micDir} -l ${logFile} --tmp-dir ${cacheDir} -j ${params.JOBS_NUMBER} \
@@ -317,7 +316,7 @@ with open("tmp.txt", "r") as f:
           \${groups_single} \${groups_forward} \${groups_backward} \
           ${unified_repo_name} \${unified_repo} \${unified_asan_repo} \
           base-standard \${base_repo} \${base_asan_repo}
-        '''
+        """
       }
     }
   }
