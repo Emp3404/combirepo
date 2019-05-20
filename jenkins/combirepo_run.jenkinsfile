@@ -286,9 +286,9 @@ with open("tmp.txt", "r") as f:
         mkdir -p ${micDir}
         mkdir -p ${cacheDir}
 
-        echo "${BUILD_URL}" > \"${micDir}\"/info.txt
+        echo "${BUILD_URL}" > ${micDir}/info.txt
 
-        tmp_day=$(date '+%a')
+        tmp_day=$(date +%a)
 	groups_single=''
         case $tmp_day in
             Mon)
