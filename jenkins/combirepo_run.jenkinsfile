@@ -9,7 +9,7 @@ def unified_asan_repo_name
 def pkgURL
 def pkgTmp
 def ks_tmp
-
+def san_groups
 
 pipeline {
   agent {
@@ -205,22 +205,22 @@ pipeline {
 	  #!/bin/bash  
 	  
 	  tmp_day=$(date +%a)
-	  san_groups=""
+	  san=""
 	  case $tmp_day in
             Mon)
-	    	san_groups="--groups-single generic-base --groups-single mobile-base --groups-single mobile-adaptation --groups-single generic-desktop-applications --groups-single mobile-console-tools --groups-single mobile-wayland"
+	    	san="--groups-single generic-base --groups-single mobile-base --groups-single mobile-adaptation --groups-single generic-desktop-applications --groups-single mobile-console-tools --groups-single mobile-wayland"
 	        ;;
             Thu)
-	    	san_groups="--groups-single mobile-middleware"
+	    	san="--groups-single mobile-middleware"
 	        ;;
             Wed)
-       	    	san_groups="--groups-single mobile-dali --groups-single mobile-applications --groups-single mobile-efl --groups-single mobile-enlightnement --groups-single mobile-input-framework --groups-single mobile-connectivity-framework"
+       	    	san="--groups-single mobile-dali --groups-single mobile-applications --groups-single mobile-efl --groups-single mobile-enlightnement --groups-single mobile-input-framework --groups-single mobile-connectivity-framework"
               	;;
             Thu)
-	    	san_groups="--groups-single generic-multimedia --groups-single mobile-multimedia --groups-single mobile-bluetooth --groups-single mobile-web-framework --groups-single mobile-telephony"
+	    	san="--groups-single generic-multimedia --groups-single mobile-multimedia --groups-single mobile-bluetooth --groups-single mobile-web-framework --groups-single mobile-telephony"
 	    	;;
 	  esac	  
-	  echo $san_groups
+	  echo $san > groups.txt
 	  
 	  curl -u ${OBS_USR}:"${OBS_PSW}" http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/ > tmp.txt
 	  a=$(python <(echo '
@@ -233,10 +233,11 @@ with open("tmp.txt", "r") as f:
     print(max(builds))
           '))
           ks="http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/images/standard/mobile-wayland-armv7l-tm1/"$a"_mobile-wayland-armv7l-tm1.ks"
-          echo ${ks} > tmp.txt
+          echo ${ks} > kickstart.txt
           '''
-	  ks_tmp=readFile('tmp.txt').trim()
-          sh 'rm -rf tmp.txt'        
+	  ks_tmp=readFile('kickstart.txt').trim()
+	  san_groups=readFile('groups.txt')
+          sh 'rm -rf kickstart.txt groups.txt'
           ksFile = "local.ks"
           logFile = "local.log"
           pkgFile = "local.packages"
@@ -303,7 +304,7 @@ with open("tmp.txt", "r") as f:
         mkdir -p ${cacheDir}
 
         echo "${BUILD_URL}" > ${micDir}/info.txt	
-	groups_single='--groups-single mobile-middleware'
+	groups_single=${san_groups}
 
         mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc    
 	groups_single=\'--groups-single generic-base --groups-single mobile-base --groups-single mobile-adaptation --groups-single generic-desktop-applications --groups-single mobile-console-tools --groups-single mobile-wayland\'
