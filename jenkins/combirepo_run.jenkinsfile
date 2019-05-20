@@ -198,8 +198,7 @@ pipeline {
 
   stages {
     stage('Parameters initialization') {
-      steps {
-          
+      steps {          
         script {
           sh '''
 	  #!/bin/bash
@@ -217,8 +216,8 @@ with open("tmp.txt", "r") as f:
           echo ${ks} > tmp.txt
           '''
           ks_tmp=readFile('tmp.txt').trim()
-          sh 'rm -rf tmp.txt'
-        
+	  sh 'echo $ks_tmp'
+          sh 'rm -rf tmp.txt'        
           ksFile = "local.ks"
           logFile = "local.log"
           pkgFile = "local.packages"
