@@ -245,7 +245,6 @@ with open("tmp.txt", "r") as f:
     stage('Build') {
       steps {
         sh """
-	#!/bin/bash
         rm -rf ${micDir} ${cacheDir} ./*
         wget ${pkgURL} -O ${pkgTmp} --user ${OBS_USR} --password ${OBS_PSW}
         if [ ! -f ${pkgTmp} ]; then
@@ -290,24 +289,7 @@ with open("tmp.txt", "r") as f:
         echo "${BUILD_URL}" > \"${micDir}\"/info.txt
 
         mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc    
-        
-        tmp_day=$(date '+%a')
-        case $tmp_day in
-            Mon)
-	    	groups_single=\'--groups-single generic-base --groups-single mobile-base --groups-single mobile-adaptation --groups-single generic-desktop-applications --groups-single mobile-console-tools --groups-single mobile-wayland\'
-	        ;;
-            Thu)
-	    	groups_single=\'--groups-single mobile-middleware\'
-	        ;;
-            Wed)
-       	    	groups_single=\'--groups-single mobile-dali --groups-single mobile-applications --groups-single mobile-efl --groups-single mobile-enlightnement --groups-single mobile-input-framework --groups-single mobile-connectivity-framework\'
-              	;;
-            Thu)
-	    	groups_single=\'--groups-single generic-multimedia --groups-single mobile-multimedia --groups-single mobile-bluetooth --groups-single mobile-web-framework --groups-single mobile-telephony\'
-	    	;;
-        esac
-        echo $groups_single        
-        
+	groups_single=\'--groups-single generic-base --groups-single mobile-base --groups-single mobile-adaptation --groups-single generic-desktop-applications --groups-single mobile-console-tools --groups-single mobile-wayland\'
         combirepo -A ${params.ARCH} -k ${ksFile} --packages-file ${pkgFile} --user ${OBS_USR} --password ${OBS_PSW} \
           -o ${micDir} -l ${logFile} --tmp-dir ${cacheDir} -j ${params.JOBS_NUMBER} \
           \${greedy} \${mirror} \${rpm_patching} \${debug} \${verbose} \
