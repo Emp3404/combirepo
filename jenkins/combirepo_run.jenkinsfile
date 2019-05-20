@@ -276,8 +276,6 @@ pipeline {
         mkdir -p ${cacheDir}
 	
 	echo ${micDir}
-	
-        echo "${BUILD_URL}" > ${micDir}/info.txt
 
         mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc        
         
