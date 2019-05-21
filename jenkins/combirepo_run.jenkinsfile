@@ -223,7 +223,7 @@ pipeline {
 	  echo $san > groups.txt
 	  
 	  curl -u ${OBS_USR}:"${OBS_PSW}" http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/ > tmp.txt
-	  a=$(python < echo '
+	  a=$(python -c '
 builds = list()
 with open("tmp.txt", "r") as f:
     for line in f:
