@@ -214,7 +214,7 @@ pipeline {
 	    	san='--groups-single mobile-middleware'
 	        ;;
             Wed)
-       	    	san='--groups-single mobile-dali --groups-single mobile-applications --groups-single mobile-efl --groups-single mobile-enlightnement --groups-single mobile-input-framework --groups-single mobile-connectivity-framework'
+       	    	san='--groups-single mobile-dali --groups-single mobile-efl --groups-single mobile-enlightnement --groups-single mobile-input-framework --groups-single mobile-connectivity-framework'
               	;;
             Thu)
 	    	san='--groups-single generic-multimedia --groups-single mobile-multimedia --groups-single mobile-bluetooth --groups-single mobile-web-framework --groups-single mobile-telephony'
