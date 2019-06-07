@@ -317,7 +317,9 @@ with open("tmp.txt", "r") as f:
 	groups_single="${san_groups}"
 
         mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc    
-
+	
+	echo ${unified_repo}
+	
         combirepo -A ${params.ARCH} -k ${ksFile} --packages-file ${pkgFile} --user ${OBS_USR} --password ${OBS_PSW} \
           -o ${micDir} -l ${logFile} --tmp-dir ${cacheDir} -j ${params.JOBS_NUMBER} \
           \${greedy} \${mirror} \${rpm_patching} \${debug} \${verbose} \
