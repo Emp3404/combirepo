@@ -276,8 +276,8 @@ with open("tmp.txt", "r") as f:
             echo "Kickstart file not found!"
             exit 1
         fi
-        
-	curl -u 'm.ahmadullin:Sun$357D' http://10.113.136.32/download_trbs/public_mirror/tizen/unified/ > tmp.txt
+	
+	curl -u ${OBS_USR}:"${OBS_PSW}" http://10.113.136.32/download_trbs/public_mirror/tizen/unified/ > tmp.txt
 	unified_repo=$(python -c '
 builds = list()
 with open("tmp.txt", "r") as f:
