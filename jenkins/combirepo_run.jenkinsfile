@@ -316,7 +316,7 @@ with open("tmp.txt", "r") as f:
 
         echo "${BUILD_URL}" > ${micDir}/info.txt	
 	groups_single="${san_groups}"
-
+	test="${unified_repo}"
         mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc    
 	
 	echo ${unified_repo}
@@ -328,7 +328,7 @@ with open("tmp.txt", "r") as f:
           -S asan-runtime-env \
           \${forward} \${backward} \${single} \${exclude} \${preferable} \
           \${groups_single} \${groups_forward} \${groups_backward} \
-          ${unified_repo_name} \${unified_repo} \${unified_asan_repo} \
+          ${unified_repo_name} \${test} \${unified_asan_repo} \
           base-standard \${base_repo} \${base_asan_repo}
         """
       }
