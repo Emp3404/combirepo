@@ -204,18 +204,18 @@ pipeline {
         script {
           sh '''
 	  #!/bin/bash	
-	curl -u ${OBS_USR}:"${OBS_PSW}" http://10.113.136.32/download_trbs/public_mirror/tizen/unified/ > tmp.txt
+	curl -u ${OBS_USR}:"${OBS_PSW}" http://10.113.136.32/download_trbs/public_mirror/tizen/unified/ > unified_repo.txt
 	unified_repo=$(python -c '
 builds = list()
-with open("tmp.txt", "r") as f:
+with open("unified_repo.txt", "r") as f:
     for line in f:
         if "tizen-unified_" in line:
 	    tmp = line.find("tizen-unified")
 	    builds.append(line[tmp:tmp+24])
     print(max(builds))
 ')	
-	rm -rf tmp.txt
-	unified_repo=http://10.113.136.32/download_trbs/public_mirror/tizen/unified/${unified_repo}/repos/standard/packages/
+	  unified_repo=http://10.113.136.32/download_trbs/public_mirror/tizen/unified/${unified_repo}/repos/standard/packages/
+	  echo ${unified_repo} > unified_repo.txt
 	  tmp_day=$(date +%a)
 	  san=""
 	  case $tmp_day in
@@ -247,9 +247,10 @@ with open("tmp.txt", "r") as f:
           ks="http://10.113.136.32/download_trbs/snapshots/devel/san/5.5-unified-asan/latest/images/standard/mobile-wayland-armv7l-tm1/"$a"_mobile-wayland-armv7l-tm1.ks"
           echo ${ks} > kickstart.txt
           '''
+	  unified_repo=readFile('unified_repo.txt').trim()
 	  ks_tmp=readFile('kickstart.txt').trim()
 	  san_groups=readFile('groups.txt')
-          sh 'rm -rf kickstart.txt groups.txt'
+          sh 'rm -rf kickstart.txt groups.txt unified_repo.txt'
           ksFile = "local.ks"
           logFile = "local.log"
           pkgFile = "local.packages"
