@@ -10,6 +10,7 @@ def pkgURL
 def pkgTmp
 def ks_tmp
 def san_groups
+def unified_repo
 
 pipeline {
   agent {
@@ -202,8 +203,19 @@ pipeline {
       steps {          
         script {
           sh '''
-	  #!/bin/bash  
-	  
+	  #!/bin/bash	
+	curl -u ${OBS_USR}:"${OBS_PSW}" http://10.113.136.32/download_trbs/public_mirror/tizen/unified/ > tmp.txt
+	unified_repo=$(python -c '
+builds = list()
+with open("tmp.txt", "r") as f:
+    for line in f:
+        if "tizen-unified_" in line:
+	    tmp = line.find("tizen-unified")
+	    builds.append(line[tmp:tmp+24])
+    print(max(builds))
+')	
+	rm -rf tmp.txt
+	unified_repo=http://10.113.136.32/download_trbs/public_mirror/tizen/unified/${unified_repo}/repos/standard/packages/
 	  tmp_day=$(date +%a)
 	  san=""
 	  case $tmp_day in
@@ -261,7 +273,7 @@ with open("tmp.txt", "r") as f:
     
     stage('Build') {
       steps {
-        sh '''
+        sh """
         rm -rf ${micDir} ${cacheDir} ./*
         wget ${pkgURL} -O ${pkgTmp} --user ${OBS_USR} --password ${OBS_PSW}
         if [ ! -f ${pkgTmp} ]; then
@@ -276,19 +288,6 @@ with open("tmp.txt", "r") as f:
             echo "Kickstart file not found!"
             exit 1
         fi
-	
-	curl -u ${OBS_USR}:"${OBS_PSW}" http://10.113.136.32/download_trbs/public_mirror/tizen/unified/ > tmp.txt
-	unified_repo=$(python -c '
-builds = list()
-with open("tmp.txt", "r") as f:
-    for line in f:
-        if "tizen-unified_" in line:
-	    tmp = line.find("tizen-unified")
-	    builds.append(line[tmp:tmp+24])
-    print(max(builds))
-')	
-	rm -rf tmp.txt
-	unified_repo=http://10.113.136.32/download_trbs/public_mirror/tizen/unified/${unified_repo}/repos/standard/packages/
         unified_asan_repo=`cat ${ksFile} | grep 'repo --name=${unified_asan_repo_name} --baseurl=' | egrep -o 'https?://[^ ]+'`
         base_repo=`cat ${ksFile} | grep 'repo --name=base-standard --baseurl=' | egrep -o 'https?://[^ ]+'`
         base_asan_repo=`cat ${ksFile} | grep 'repo --name=base-standard-asan --baseurl=' | egrep -o 'https?://[^ ]+'`
@@ -328,7 +327,7 @@ with open("tmp.txt", "r") as f:
           \${groups_single} \${groups_forward} \${groups_backward} \
           ${unified_repo_name} \${unified_repo} \${unified_asan_repo} \
           base-standard \${base_repo} \${base_asan_repo}
-        '''
+        """
       }
     }
   }
