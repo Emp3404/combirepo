@@ -210,13 +210,13 @@ pipeline {
 	    	san='--groups-single generic-base --groups-single mobile-base --groups-single mobile-adaptation --groups-single generic-desktop-applications --groups-single mobile-console-tools --groups-single mobile-wayland'
 	        ;;
             Tue)
-	    	san='--groups-single mobile-middleware'
+	    	san='--groups-single mobile-middleware --groups-single generic-multimedia'
 	        ;;
             Wed)
        	    	san='--groups-single mobile-applications --groups-single mobile-dali --groups-single mobile-efl --groups-single mobile-enlightnement --groups-single mobile-input-framework --groups-single mobile-connectivity-framework'
               	;;
             Thu)
-	    	san='--groups-single generic-multimedia --groups-single mobile-multimedia --groups-single mobile-bluetooth --groups-single mobile-web-framework --groups-single mobile-telephony'
+	    	san='--groups-single mobile-multimedia --groups-single mobile-bluetooth --groups-single mobile-web-framework --groups-single mobile-telephony'
 	    	;;
 	  esac	  
 	  echo $san > groups.txt
